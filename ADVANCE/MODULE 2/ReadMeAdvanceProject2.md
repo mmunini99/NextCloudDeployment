@@ -232,10 +232,27 @@ TEST SUITE: None
 
 ## Run the test
 
-To rename the output of the test:
+There have been provided three different kind of test:
+
+* **latency** between two pods on same node and whene there is a pod in *masternode* and *workernode*.
+Two collective operations:
+
+* **broadcast** between two pods on same node and whene there is a pod in *masternode* and *workernode*.
+* **all reduce** between two pods on same node and whene there is a pod in *masternode* and *workernode*.
+
+
+To run a test, the user need to move into *define_benchmark* folder and rune the following command:
 ```bash
-mv results.txt result_filename.txt
+cd define_benchmark
+
+bash filname
 ```
+
+where filename is selected from : 
+
+* allreduce-one-node.sh , allreduce-two-nodes.sh
+* bcast-one-node.sh , bcast-two-nodes.sh
+* p2p-one-node.sh , p2p-two-nodes.sh
 
 To copy the results from the VM masternode to your local machine, run the following command from the directory in your local machine where you ant to save your results:
 
