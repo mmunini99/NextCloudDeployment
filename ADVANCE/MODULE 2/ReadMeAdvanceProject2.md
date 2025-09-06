@@ -241,7 +241,7 @@ Two collective operations:
 * **all reduce** between two pods on same node and whene there is a pod in *masternode* and *workernode*.
 
 
-To run a test, the user need to move into *define_benchmark* folder and rune the following command:
+To run a test, the user need to move into *define_benchmark* folder and run the following command:
 ```bash
 cd define_benchmark
 
