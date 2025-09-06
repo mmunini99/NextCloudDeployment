@@ -1,0 +1,111 @@
+replicaCount: 1 # only 1 since minikube
+
+image:
+  repository: nextcloud
+  #flavor: fpm
+  tag: "27"
+
+nextcloud:
+  host: nextcloud.local
+
+  existingSecret:
+    enabled: true
+    secretName: sys-cloud-secret
+    usernameKey: username
+    passwordKey: password
+    #tokenKey: token here no needed but useful
+
+  trustedDomains:
+    - nextcloud.local
+    - 127.0.0.1
+    - localhost
+    - "*"
+
+  datadir: /var/www/html/data
+
+  strategy:
+    type: Recreate
+
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    existingClaim: nextcloud-pvc
+    size: 5Gi
+
+
+externalDatabase:
+  enabled: true
+  type: mariadb
+  host: localhost
+  port: 3306
+  existingSecret:
+    enabled: true
+    secretName: mariadb-secret  #debug fixing try now from secrets, before in clear works
+    usernameKey: mariadb-user
+    passwordKey: mariadb-password
+    rootPasswordKey: mariadb-root-password
+    databaseKey: mariadb-database
+    hostKey: host
+
+internalDatabase:
+  enabled: false
+
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  existingClaim: nextcloud-pvc
+  size: 5Gi
+
+redis:
+  enabled: true
+  auth:
+    enabled: true
+    existingSecret: redis-secret
+    existingSecretPasswordKey: redis-password
+  architecture: standalone
+  master:
+    enabled: true
+    persistence:
+      enabled: false  # no PVC for Redis, at least in this initial stage
+    replicas: 1      # problem here: debug fixig try 1 to ensure pod
+  replica: # debug fixin at the moment no
+    enabled: false
+    persistence:
+      enabled: false
+    replicas: 0
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - nextcloud.local
+
+service:
+  type: LoadBalancer
+  port: 80
+  annotations:
+    metallb.universe.tf/address-pool: nextcloud-ip-pool
+
+
+startupProbe:
+  enabled: false
+  
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+
+
+namespace: cloud # everything into my namespace

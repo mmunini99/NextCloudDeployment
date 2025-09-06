@@ -1,0 +1,4 @@
+[mysqld]
+innodb_buffer_pool_size=1G
+innodb_log_file_size=256M
+max_connections=200

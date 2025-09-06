@@ -1,0 +1,46 @@
+version: '3'
+
+networks:
+  nextcloud:
+    
+
+volumes:
+  nextcloud:
+  db:
+
+services:
+  db:
+    image: mariadb:10.6
+    restart: always
+    command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
+    volumes:
+      - db:/var/lib/mysql
+      - ./mariadb_custom.cnf:/etc/mysql/conf.d/mariadb_custom.cnf:ro
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_pswd
+      - MYSQL_PASSWORD=root_pswd_ini
+      - MYSQL_DATABASE=db_maria
+      - MYSQL_USER=admin_sql
+    networks:
+      - nextcloud
+
+  app:
+    image: nextcloud:31
+    restart: always
+    ports:
+      - "8080:80"
+    links:
+      - db
+    volumes:
+      - nextcloud:/var/www/html
+      - ./zzz-override.ini:/usr/local/etc/php/conf.d/zzz-override.ini
+
+    environment:
+      - MYSQL_PASSWORD=root_pswd_ini
+      - MYSQL_DATABASE=db_maria
+      - MYSQL_USER=admin_sql
+      - MYSQL_HOST=db
+      - NEXTCLOUD_ADMIN_USER=admin
+      - NEXTCLOUD_ADMIN_PASSWORD=admin
+    networks:
+      - nextcloud

@@ -1,0 +1,49 @@
+services:
+  master:
+    image: locustio/locust:2.37.12
+    ports:
+      - "8089:8089"
+    networks:
+      - nextcloud_docker_nextcloud
+    volumes:
+      - ./:/mnt/locust
+      - ./files:/app/files
+    command:
+      - -f
+      - /mnt/locust/run_test_locust.py
+      - --master
+      - --host
+      - http://nextcloud_docker-app-1
+ 
+
+
+
+    mem_limit: 4g
+    cpus: 2.0
+
+  worker:
+    depends_on:
+      - master
+    image: locustio/locust:2.37.12
+    networks:
+      - nextcloud_docker_nextcloud
+    volumes:
+      - ./:/mnt/locust
+      - ./files:/app/files
+    command:
+      - -f
+      - /mnt/locust/run_test_locust.py
+      - --worker
+      - --master-host
+      - master
+      - --host
+      - http://nextcloud_docker-app-1
+  
+
+    mem_limit: 4g
+    cpus: 2.0
+
+
+networks:
+  nextcloud_docker_nextcloud:
+    external: true

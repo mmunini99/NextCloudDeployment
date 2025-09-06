@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nextcloud-ingress
+  namespace: cloud
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"  # Disable SSL redirection if you're not using SSL
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"  # Increase max upload size for Nextcloud
+    nginx.ingress.kubernetes.io/affinity: "cookie"  # Sticky sessions for better session handling
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: nextcloud.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nextcloud
+                port:
+                  number: 80
