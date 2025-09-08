@@ -96,7 +96,7 @@ helm install nginx-ingress oci://ghcr.io/nginxinc/charts/nginx-ingress --version
 ```
 
 
-Wait 2 minutes for the conatiner to be ready and running. To check run:
+Wait 40 seconds for the container to be ready and running. To check run:
 
 ```bash
 kubectl get pods -n default -l app.kubernetes.io/name=nginx-ingress
@@ -149,7 +149,7 @@ Then ssh into the node and do the following:
 ```bash
 minikube ssh
 sudo mkdir -p /mnt/data/nextcloud
-Since your pod is running with fsGroup: 33 (which corresponds to www-data group), run:
+#Since your pod is running with fsGroup: 33 (which corresponds to www-data group), run:
 
 sudo chown -R 33:33 /mnt/data/nextcloud
 
@@ -176,12 +176,24 @@ Make the restart:
 kubectl -n kube-system delete pods -l k8s-app=kube-proxy
 ```
 
-Then, run:
+Then, wait for the service to run (5 minutes):
 ```bash
 kubectl port-forward svc/nextcloud 8080:80 -n cloud
 ```
 
 and open a web browser, like Chrome, DuckDuckGo, Mozilla FireFox ... and navigate at http://localhost:8080. (to enter as admin, username is admin and password is admin123).
+
+Another solution, relies on opening a separate terminal window and from there run:
+```bash
+minikube tunnel
+```
+
+then on the terminal where all the deploy has been completed, run this comand:
+```bash
+kubectl get services -n cloud
+```
+
+then taking the IP on *EXTERNAL-IP* at *NAME nextcloud* the use can navigate into NextCloud UI at *http://IP*. 
 
 Outside WLS the user could have been access, thanks ingress, to nextcloud.local.
 
