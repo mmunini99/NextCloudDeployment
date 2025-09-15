@@ -30,7 +30,7 @@ At the beginning, the user needs to clone this GitHub repository. Then, open the
 cd deploy_nextcloud
 ```
 
-Firstly, start one single node in Kubernets using *minikube*, with docker driver. There are other drivers, but I did not try with them, so please keep docker driver in this project. So, the user need to run the following command:
+Firstly, start one single node in Kubernets using *minikube*, with docker driver. There are other drivers, but I did not try with them, so please keep docker driver in this project. So, the user need to run the following command (before activate Docker Desktop):
 ```bash
 minikube start --driver=docker
 ```
@@ -177,6 +177,22 @@ kubectl -n kube-system delete pods -l k8s-app=kube-proxy
 ```
 
 Then, wait for the service to run (5 minutes):
+
+```bash
+kubectl get pods -n cloud
+```
+
+and the output should be similar to:
+```bash
+NAME                         READY   STATUS    RESTARTS   AGE
+mariadb-74b559bd8f-ks6zh     1/1     Running   0          6m26s
+nextcloud-5ddd555b49-snrxd   1/1     Running   0          6m23s
+nextcloud-redis-master-0     1/1     Running   0          6m23s
+redis-6df979df64-5fpm6       1/1     Running   0          6m26s
+```
+
+Then, since problems with WLS, to reach from web browser the service:
+
 ```bash
 kubectl port-forward svc/nextcloud 8080:80 -n cloud
 ```
@@ -195,7 +211,17 @@ kubectl get services -n cloud
 
 then taking the IP on *EXTERNAL-IP* at *NAME nextcloud* the use can navigate into NextCloud UI at *http://IP*. 
 
-Outside WLS the user could have been access, thanks ingress, to nextcloud.local.
+Outside WLS the user could have been access, thanks ingress, to nextcloud.local, meaning that by running (namespace cloud, since created before for organizing better resources):
+```bash
+kubectl get ingress -n cloud
+```
+
+the output would be like:
+```bash
+NAME                CLASS   HOSTS             ADDRESS          PORTS   AGE
+nextcloud-ingress   nginx   nextcloud.local   192.168.49.240   80      10m
+```
+so, last thing to access with nextcloud.local would be to map the IP address to nextcloud.local in host file on the user host machine.
 
 To close everything:
 ```bash
