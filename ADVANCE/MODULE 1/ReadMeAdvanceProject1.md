@@ -156,7 +156,7 @@ sudo chown -R 33:33 /mnt/data/nextcloud
 exit
 ```
 
-Then, the last thin is to modify a config file, so run:
+Then, the last thing is to modify a config file, so run:
 ```bash
 kubectl edit configmap -n kube-system kube-proxy
 ```
