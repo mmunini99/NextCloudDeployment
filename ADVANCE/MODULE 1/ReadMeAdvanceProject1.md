@@ -119,9 +119,9 @@ kubectl apply -f pv-pvc/nextcloud-pvc.yaml -n cloud
 kubectl apply -f pv-pvc/mariadb-pv.yaml
 kubectl apply -f pv-pvc/mariadb-pvc.yaml -n cloud
 
-#PersistentVolume (PV) is a cluster-wide resource, not tied to any namespace. It represents a piece of storage in the cluster. Because it's a resource shared across the entire cluster, it does not belong to any specific namespace.
+#PersistentVolume (PV) is a cluster-wide resource --> not tied to any namespace. 
 
-#PersistentVolumeClaim (PVC) is a namespaced resource. It lives inside a namespace because it represents a request for storage by a particular workload or application running in that namespace.
+#PersistentVolumeClaim (PVC) is a namespaced resource --> It lives inside a namespace.
 
 
 
@@ -149,7 +149,7 @@ Then ssh into the node and do the following:
 ```bash
 minikube ssh
 sudo mkdir -p /mnt/data/nextcloud
-#Since your pod is running with fsGroup: 33 (which corresponds to www-data group), run:
+#Since this pod (the one of the project) is running with fsGroup: 33 (which corresponds to www-data group), run:
 
 sudo chown -R 33:33 /mnt/data/nextcloud
 
