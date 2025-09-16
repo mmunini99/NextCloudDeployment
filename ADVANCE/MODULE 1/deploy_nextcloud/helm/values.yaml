@@ -36,7 +36,7 @@ nextcloud:
 externalDatabase:
   enabled: true
   type: mariadb
-  host: localhost
+  host: mariadb
   port: 3306
   existingSecret:
     enabled: true
